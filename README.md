@@ -7,11 +7,11 @@ This project contains a Python-based solution for the VEXcode VR platform. The r
 ---
 
 ## Requirements Met
-This solution was engineered to hit all Basic and Advanced requirements of the assessment:
+i wrote this to cover all the Basic and Advanced requirements of the assessment:
 - **Basic:** Navigates corridors without hitting walls and successfully escapes the randomly generated maze.
 - **Advanced 1 (Map the Maze):** Saves a map of the paths the robot actually explored in its memory, and prints out a clear, text-based grid of this map to the console when it finishes.
 - **Advanced 2 (Return Home):** Automatically calculates the shortest path from the exit back to the starting coordinate `(0,0)` and drives back.
-- **Advanced 3 (Quickest Route):** After returning to base, the robot draws a green line along the mathematically shortest, most efficient route out of the maze.
+- **Advanced 3 (Quickest Route):** After returning to base, the robot draws a green line along the  shortest, most efficient route out of the maze.
 
 ---
 
@@ -20,9 +20,9 @@ This solution was engineered to hit all Basic and Advanced requirements of the a
 To make the robot fast and save memory, this project combines a simple wall-following rule (to explore the maze) with a pathfinding algorithm (to calculate the fastest way out).
 
 ### 1. Exploration: The Right-Hand Rule
-For the initial exploration phase, the robot utilizes a **Right-Hand Rule** algorithm. In a simply connected maze (a maze with no detached walls or loops), keeping the "right hand" on the wall mathematically guarantees the robot will eventually find the exit. 
+For the initial exploration phase, the robot uses a Right-Hand Rule algorithm. In a simply connected maze (a maze with no detached walls or loops), keeping the "right hand" on the wall guarantees the robot will eventually find the exit. 
 * **Sensor Logic:** The robot checks its Front Distance Sensor before making any forward movements. If the distance to an object is greater than 250mm (one exact grid tile), it moves forward. If not, it registers a wall and turns.
-* **Exploration vs. Exploitation Trade-off:** By stopping exploration the moment the exit is found, we prioritize speed and battery efficiency over mapping the entire board. It finds the shortest known path rather than wasting time mapping useless dead-ends on the opposite side of the maze.
+* **Saving Time & Battery: or Stopping Early:** By stopping exploration the moment the exit is found, we prioritize speed and battery efficiency over mapping the entire board. It finds the shortest known path rather than wasting time mapping useless dead-ends on the opposite side of the maze.
 
 ### 2. Mapping: Adjacency List 
 Instead of pre-allocating a massive 2D array and filling it with empty space, the robot maps the maze dynamically using an **Adjacency List** stored in a Python dictionary. 
@@ -33,7 +33,7 @@ Instead of pre-allocating a massive 2D array and filling it with empty space, th
 ### 3. Pathfinding: Breadth-First Search (BFS)
 Once the exit is found, the robot runs a Breadth-First Search (BFS) algorithm on its generated Adjacency List. 
 * Because every tile in the VEX VR maze takes the exact same amount of time to cross, the graph is "unweighted." 
-* BFS is the mathematically optimal algorithm for unweighted grids. It explores outward evenly in all directions step-by-step. Because of this even spread, it naturally trims out all the long dead-ends the robot accidentally explored earlier, returning an array of coordinates representing the absolute shortest path between the Start and the Exit.
+* BFS is the ideal algorithm for unweighted grids. It explores outward evenly in all directions step-by-step. Because of this even spread, it naturally trims out all the long dead-ends the robot accidentally explored earlier, returning an array of coordinates representing the absolute shortest path between the Start and the Exit.
 
 ### 4. Modular Movement (Modulo Math)
 To translate the BFS coordinate array into physical robot movements, a custom `follow_path()` function was written. It calculates the required heading (0=North, 1=East, 2=South, 3=West) and subtracts the robot's current heading. By applying **modulo 4 (`% 4`)** to the difference, the code instantly calculates exactly how many 90-degree right turns the drivetrain needs to execute to face the correct tile.
